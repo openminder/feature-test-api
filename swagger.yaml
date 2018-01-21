@@ -1,0 +1,566 @@
+swagger: '2.0'
+info:
+  description: feature test api
+  version: 1.0.0
+  title: Feature Test API
+  contact:
+    email: martin@codebaker.io
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: feature-test.codebaker.io
+basePath: /v1
+tags:
+  - name: feature
+    description: Everything about the features
+  - name: project
+    description: Access to projects
+  - name: testPeriod
+    description: Operations to connect features with test periods
+schemes:
+  - http
+  - https
+paths:
+  /feature:
+    post:
+      tags:
+        - feature
+      summary: Add a new feature to a project
+      description: ''
+      operationId: addFeature
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Feature object that needs to be added to the project
+          required: true
+          schema:
+            $ref: '#/definitions/Feature'
+      responses:
+        '405':
+          description: Invalid input
+    put:
+      tags:
+        - feature
+      summary: Update an existing feature
+      description: ''
+      operationId: updateFeature
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Feature object that needs to be added to the project
+          required: true
+          schema:
+            $ref: '#/definitions/Feature'
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Pet not found
+        '405':
+          description: Validation exception
+  /feature/findByProject:
+    get:
+      tags:
+        - feature
+      summary: Finds Features by project
+      description: ''
+      operationId: findFeaturesByProject
+      produces:
+        - application/json
+      parameters:
+        - name: project
+          in: query
+          description: Project ID's that need to be considered for filter
+          required: true
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Feature'
+        '204':
+          description: No feature found in project
+        '400':
+          description: Invalid project ID value
+  /feature/findByVersions:
+    get:
+      tags:
+        - feature
+      summary: Finds Features by version
+      description: >-
+        Muliple versions can be provided with comma separated strings. Use
+        version1, version2, version3 for testing.
+      operationId: findFeaturesByVersions
+      produces:
+        - application/json
+      parameters:
+        - name: versions
+          in: query
+          description: Versions to filter by
+          required: true
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Feature'
+        '204':
+          description: No feature found for that version
+        '400':
+          description: Invalid version value
+  '/feature/{featureId}':
+    get:
+      tags:
+        - feature
+      summary: Find feature by ID
+      description: Returns a single feature
+      operationId: getFeatureById
+      produces:
+        - application/json
+      parameters:
+        - name: featureId
+          in: path
+          description: ID of feature to return
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Feature'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Feature not found
+    delete:
+      tags:
+        - feature
+      summary: Deletes a feature
+      description: ''
+      operationId: deleteFeature
+      produces:
+        - application/json
+      parameters:
+        - name: featureId
+          in: path
+          description: Feature to delete
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Deleted successfully
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Feature not found
+  /project:
+    post:
+      tags:
+        - project
+      summary: Add a new Project
+      description: ''
+      operationId: addProject
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Project object that needs to be added
+          required: true
+          schema:
+            $ref: '#/definitions/Project'
+      responses:
+        '405':
+          description: Invalid input
+    put:
+      tags:
+        - project
+      summary: Update an existing project
+      description: ''
+      operationId: updateProject
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Project object that needs to be added
+          required: true
+          schema:
+            $ref: '#/definitions/Project'
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Project not found
+        '405':
+          description: Validation exception
+  /project/findAll:
+    get:
+      tags:
+        - feature
+      summary: Finds all projects
+      description: ''
+      operationId: findAllProjects
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Project'
+        '404':
+          description: No projects available
+  '/project/{projectId}':
+    get:
+      tags:
+        - project
+      summary: Find project by ID
+      description: Returns a single project
+      operationId: getProjectById
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: ID of project to return
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Project'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Project not found
+    delete:
+      tags:
+        - project
+      summary: Deletes a Project and all of its features
+      description: ''
+      operationId: deleteProject
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project to delete
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Deleted successfully
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Project not found
+  /test-period:
+    post:
+      tags:
+        - testPeriod
+      summary: Start a new TestPeriod
+      description: ''
+      operationId: addTestPeriod
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: TestPeriod object that needs to be added
+          required: true
+          schema:
+            $ref: '#/definitions/TestPeriod'
+      responses:
+        '405':
+          description: Invalid input
+    put:
+      tags:
+        - testPeriod
+      summary: Update an existing test period
+      description: ''
+      operationId: updateTestPeriod
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Test period object that needs to be updated
+          required: true
+          schema:
+            $ref: '#/definitions/TestPeriod'
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Test period not found
+        '405':
+          description: Validation exception
+  /test-period/findByProject:
+    get:
+      tags:
+        - testPeriod
+      summary: Finds all test periods by project
+      description: ''
+      operationId: findTestPeriodByProject
+      produces:
+        - application/json
+      parameters:
+        - name: project
+          in: query
+          description: Project to filter by
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TestPeriod'
+        '404':
+          description: No test periods available
+  /test-period/addFeatures:
+    post:
+      tags:
+        - testPeriod
+      summary: Add a list of features to a TestPeriod
+      description: ''
+      operationId: addFeatureToTestPeriod
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: feature-ids
+          in: query
+          description: Feature ID's to add to the test period
+          required: true
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      responses:
+        '200':
+          description: successful operation
+        '405':
+          description: Invalid input
+  '/test-period/updateResult/{testPeriodId}/{testId}':
+    patch:
+      tags:
+        - testPeriod
+      summary: Updates a test result in a TestPeriod
+      description: ''
+      operationId: updateTestResultOfTestPeriod
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: testPeriodId
+          in: path
+          description: Test period to update
+          required: true
+          type: string
+        - name: testId
+          in: path
+          description: Test to update
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Test period object that needs to be updated
+          required: true
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TestPeriod'
+        '405':
+          description: Invalid input
+  /test-period/removeFeatures:
+    delete:
+      tags:
+        - testPeriod
+      summary: Deletes features from a test period
+      description: ''
+      operationId: deleteFeatureFromTestPeriod
+      produces:
+        - application/json
+      parameters:
+        - name: feature-ids
+          in: query
+          description: Feature ID's to add to the test period
+          required: true
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      responses:
+        '200':
+          description: Deleted successfully
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Test period not found
+  '/test-period/{testPeriodId}':
+    get:
+      tags:
+        - testPeriod
+      summary: Find test period by ID
+      description: Returns a single test period
+      operationId: getTestPeriodById
+      produces:
+        - application/json
+      parameters:
+        - name: testPeriodId
+          in: path
+          description: ID of test period to return
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TestPeriod'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: TestPeriod not found
+    delete:
+      tags:
+        - testPeriod
+      summary: Deletes a test period and all of its features
+      description: ''
+      operationId: deleteTestPeriod
+      produces:
+        - application/json
+      parameters:
+        - name: testPeriodId
+          in: path
+          description: Test period to delete
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Deleted successfully
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Test period not found
+definitions:
+  Feature:
+    type: object
+    required:
+      - title
+    properties:
+      id:
+        type: string
+        format: uuid
+      title:
+        type: string
+      description:
+        type: string
+      version:
+        type: string
+      projectId:
+        type: string
+        format: uuid
+      createdAt:
+        type: string
+        format: date-time
+      modifiedAt:
+        type: string
+        format: date-time
+  Project:
+    type: object
+    required:
+      - title
+    properties:
+      id:
+        type: string
+        format: uuid
+      title:
+        type: string
+      description:
+        type: string
+      createdAt:
+        type: string
+        format: date-time
+      modifiedAt:
+        type: string
+        format: date-time
+  TestPeriod:
+    type: object
+    required:
+      - status
+    properties:
+      id:
+        type: string
+        format: uuid
+      from:
+        type: string
+        format: date-time
+      to:
+        type: string
+        format: date-time
+      status:
+        type: string
+        enum:
+          - running
+          - finished
+      tests:
+        type: array
+        items:
+          $ref: '#/definitions/Test'
+      createdAt:
+        type: string
+        format: date-time
+      modifiedAt:
+        type: string
+        format: date-time
+  Test:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      feature:
+        $ref: '#/definitions/Feature'
+      result:
+        type: boolean
+      createdAt:
+        type: string
+        format: date-time
+      modifiedAt:
+        type: string
+        format: date-time
