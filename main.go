@@ -1,23 +1,32 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"github.com/openminder/feature-test-api/feature"
 )
 
 func main() {
-	router := gin.Default()
+	r := gin.New()
+
+	// Global middleware
+	// Logger middleware will write the logs to gin.DefaultWriter even if you set with GIN_MODE=release.
+	// By default gin.DefaultWriter = os.Stdout
+	r.Use(gin.Logger())
+
+	// Recovery middleware recovers from any panics and writes a 500 if there was one.
+	r.Use(gin.Recovery())
 
 	// Simple group: v1
-	v1 := router.Group("/v1")
+	v1 := r.Group("/v1")
+	v1.Use()
 	{
-		v1.POST("/feature", CreateFeature)
+		featureGroup := v1.Group("/feature")
+		featureGroup.POST("/", feature.AddFeature)
+		featureGroup.PUT("/", feature.UpdateFeature)
+		featureGroup.GET("/findByProject", feature.FindFeaturesByProject)
+		featureGroup.GET("/findByVersions", feature.FindFeaturesByVersions)
+		featureGroup.GET("/findById/:featureID", feature.FindFeatureById)
+		featureGroup.DELETE("/:featureID", feature.DeleteFeature)
 	}
-
-	router.Run(":8080")
-}
-
-func CreateFeature(c *gin.Context) {
-	c.String(http.StatusOK, "Hello World")
+	r.Run(":8080")
 }
