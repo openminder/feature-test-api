@@ -131,7 +131,7 @@ paths:
         - feature
       summary: Find feature by ID
       description: Returns a single feature
-      operationId: getFeatureById
+      operationId: findFeatureById
       produces:
         - application/json
       parameters:
