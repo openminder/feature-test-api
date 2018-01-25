@@ -239,7 +239,7 @@ paths:
         - project
       summary: Find project by ID
       description: Returns a single project
-      operationId: getProjectById
+      operationId: findProjectById
       produces:
         - application/json
       parameters:
