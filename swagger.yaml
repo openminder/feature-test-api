@@ -218,7 +218,7 @@ paths:
   /project/findAll:
     get:
       tags:
-        - feature
+        - project
       summary: Finds all projects
       description: ''
       operationId: findAllProjects
