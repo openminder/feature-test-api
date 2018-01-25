@@ -125,7 +125,7 @@ paths:
           description: No feature found for that version
         '400':
           description: Invalid version value
-  '/feature/{featureId}':
+  '/feature/findById/{featureId}':
     get:
       tags:
         - feature
@@ -233,7 +233,7 @@ paths:
               $ref: '#/definitions/Project'
         '404':
           description: No projects available
-  '/project/{projectId}':
+  '/project/findById/{projectId}':
     get:
       tags:
         - project
@@ -353,7 +353,7 @@ paths:
         - testPeriod
       summary: Add a list of features to a TestPeriod
       description: ''
-      operationId: addFeatureToTestPeriod
+      operationId: addFeaturesToTestPeriod
       consumes:
         - application/json
       produces:
@@ -408,7 +408,7 @@ paths:
         '405':
           description: Invalid input
   /test-period/removeFeatures:
-    delete:
+    patch:
       tags:
         - testPeriod
       summary: Deletes features from a test period
@@ -432,13 +432,13 @@ paths:
           description: Invalid ID supplied
         '404':
           description: Test period not found
-  '/test-period/{testPeriodId}':
+  '/test-period/findById/{testPeriodId}':
     get:
       tags:
         - testPeriod
       summary: Find test period by ID
       description: Returns a single test period
-      operationId: getTestPeriodById
+      operationId: findTestPeriodById
       produces:
         - application/json
       parameters:

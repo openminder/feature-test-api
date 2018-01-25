@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/openminder/feature-test-api/feature"
 	"github.com/openminder/feature-test-api/project"
+	"github.com/openminder/feature-test-api/testperiod"
 )
 
 func main() {
@@ -32,9 +33,20 @@ func main() {
 		projectGroup := v1.Group("/project")
 		projectGroup.POST("/", project.AddProject)
 		projectGroup.PUT("/", project.UpdateProject)
-		projectGroup.GET("/findAll", project.FindAllProjects)
-		featureGroup.GET("/findById/:featureID", project.FindProjectById)
+		projectGroup.GET("/", project.FindAllProjects)
+		projectGroup.GET("/findById/:featureID", project.FindProjectById)
 		projectGroup.DELETE("/:featureID", project.DeleteProject)
+
+		testPeriodGroup := v1.Group("/test-period")
+		testPeriodGroup.POST("/", testperiod.AddTestPeriod)
+		testPeriodGroup.PUT("/", testperiod.UpdateTestPeriod)
+		testPeriodGroup.GET("/findByProject", testperiod.FindTestPeriodByProject)
+		testPeriodGroup.POST("/addFeatures", testperiod.AddFeaturesToTestPeriod)
+		testPeriodGroup.PATCH("/updateResult/:testPeriodID/:testID", testperiod.UpdateTestResultOfTestPeriod)
+		testPeriodGroup.PATCH("/removeFeatures", testperiod.DeleteFeatureFromTestPeriod)
+		testPeriodGroup.GET("/findById/:testPeriodId", testperiod.FindTestPeriodById)
+		testPeriodGroup.DELETE("/:testPeriodId", testperiod.DeleteTestPeriod)
+
 	}
 	r.Run(":8080")
 }
